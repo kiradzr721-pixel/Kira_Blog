@@ -1,0 +1,22 @@
+---
+import Heading from '@/components/Heading.astro'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout
+	meta={{
+		type: 'page',
+		title: 'Not Found',
+	}}
+>
+	<section class="text-center">
+		<hgroup class="mb-8">
+			<p class="text-P-lead mb-2">404</p>
+			<Heading as="h1">Not Found</Heading>
+		</hgroup>
+		<p>Sorry, no page exists at this URL.</p>
+		<p class="mt-8">
+			<a href="/" class="font-medium text-P-link hover:underline">Back to Home</a>
+		</p>
+	</section>
+</Layout>
