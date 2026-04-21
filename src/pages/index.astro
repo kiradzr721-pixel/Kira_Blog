@@ -1,0 +1,25 @@
+---
+import Heading from '@/components/Heading.astro'
+import HomeIntro from '@/components/HomeIntro.astro'
+import { SITE_BRAND_NAME } from '@/constants'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout
+	meta={{
+		type: 'page',
+		title: SITE_BRAND_NAME,
+		description:
+			'Live demo of the AstroFlareOG starter theme for Astro on Cloudflare Workers with dynamic Open Graph image generation. Open source by @firxworx.',
+	}}
+>
+	<section>
+		<header class="mb-12">
+			<Heading as="h1" class="mb-4">{SITE_BRAND_NAME}</Heading>
+			<div class="text-xl text-P-lead text-pretty">
+				<p>Astro v6 Starter Theme for Cloudflare Workers</p>
+			</div>
+		</header>
+		<HomeIntro />
+	</section>
+</Layout>
