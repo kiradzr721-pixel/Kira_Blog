@@ -1,0 +1,20 @@
+@custom-variant hover (&:hover);
+
+@custom-variant hover-mouse {
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			@slot;
+		}
+	}
+}
+
+@custom-variant hocus (&:is(:hover, :focus-visible));
+
+@custom-variant hocus-mouse {
+	@media (hover: hover) and (pointer: fine) {
+		&:hover,
+		&:focus-visible {
+			@slot;
+		}
+	}
+}

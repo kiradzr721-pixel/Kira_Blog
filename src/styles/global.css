@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@import "./palette.css" layer(base);
+@import "./utilities.css";
+@import "./typography.css";
+@import "./variants.css";
+
+@source "../**/*.{ts,tsx,astro}";
+
+@theme inline {
+	--font-heading: var(--font-atkinson-next), system-ui, sans-serif;
+	--font-sans: var(--font-atkinson-next), system-ui, sans-serif;
+	--font-mono: var(--font-atkinson-mono), ui-monospace, monospace;
+}
+
+@theme {
+	--max-width-prose: 65ch;
+	--text-tiny: 0.625rem;
+	--text-tiny--line-height: calc(1 / 0.625);
+}
+
+:root {
+	--layout-max-width: var(--container-4xl);
+	--layout-header-height: calc(var(--spacing) * 14);
+	--layout-footer-height: calc(var(--spacing) * 14);
+
+	color: var(--P-fg);
+	background-color: var(--P-bg);
+}
+
+@layer base {
+	@media (prefers-reduced-motion: reduce) {
+		::view-transition-old(root),
+		::view-transition-new(root) {
+			animation-duration: 0ms;
+		}
+	}
+
+	* {
+		scrollbar-color: var(--P-scrollbar-thumb) var(--P-scrollbar-track);
+		scrollbar-width: thin;
+		@apply border-P-border outline-P-ring/50;
+	}
+
+	html {
+		scrollbar-color: var(--P-scrollbar-thumb) var(--P-scrollbar-track);
+		scrollbar-gutter: stable both-edges;
+		scrollbar-width: thin;
+
+		@apply scroll-smooth scroll-pt-24;
+	}
+
+	body {
+		@apply relative antialiased font-sans text-base;
+		@apply selection:bg-P-selection selection:text-P-selection-fg;
+	}
+}

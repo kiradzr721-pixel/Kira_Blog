@@ -1,0 +1,44 @@
+/*
+ * Scroll fade — edges fade out as content overflows horizontally.
+ * Uses CSS scroll-driven animations. Degrades to no fade in Firefox.
+ */
+
+@property --scroll-fade-left {
+	syntax: "<length>";
+	inherits: false;
+	initial-value: 0px;
+}
+
+@property --scroll-fade-right {
+	syntax: "<length>";
+	inherits: false;
+	initial-value: 0px;
+}
+
+@keyframes scroll-fade-x {
+	0% {
+		--scroll-fade-left: 0px;
+		--scroll-fade-right: 3rem;
+	}
+	10%,
+	90% {
+		--scroll-fade-left: 3rem;
+		--scroll-fade-right: 3rem;
+	}
+	100% {
+		--scroll-fade-left: 3rem;
+		--scroll-fade-right: 0px;
+	}
+}
+
+@utility scroll-fade-x {
+	mask: linear-gradient(
+		to right,
+		transparent,
+		black var(--scroll-fade-left),
+		black calc(100% - var(--scroll-fade-right)),
+		transparent
+	);
+	animation: scroll-fade-x linear;
+	animation-timeline: scroll(self inline);
+}
