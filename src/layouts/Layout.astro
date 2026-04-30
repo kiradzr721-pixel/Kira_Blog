@@ -8,6 +8,7 @@ import { SITE_BRAND_NAME } from '@/constants'
 import type { SeoMeta, SeoMetaType } from '@/seo.types'
 import HeadSeoMeta from '@/components/HeadSeoMeta.astro'
 import { ensureTrailingSlash } from '@/lib/slashes'
+import Logo from '@/components/Logo.astro'
 
 type Props = {
 	variant?: 'page' | 'post' | 'layout' | 'full'
@@ -65,9 +66,11 @@ const containerPaddingClassName = cn('px-4 py-8 sm:py-12 md:py-16')
 	<body class="flex flex-col min-h-dvh antialiased bg-P-bg text-P-fg">
 		<header class="flex items-center min-h-(--layout-header-height) border-b border-P-border text-lg">
 			<nav
-				class="flex flex-wrap items-center justify-between gap-4 max-w-(--layout-max-width) mx-auto w-full px-4 py-4"
+				class="flex flex-wrap items-center justify-between gap-4 sm:gap-6 max-w-(--layout-max-width) mx-auto w-full px-4 py-4"
 			>
-				<a href="/" class="nav-home" aria-current={isCurrentPathname('/') ? 'page' : undefined}>{SITE_BRAND_NAME}</a>
+				<a href="/" class="nav-home" aria-current={isCurrentPathname('/') ? 'page' : undefined}
+					><Logo class="h-6 w-auto" /></a
+				>
 				<ul class="flex gap-6">
 					{
 						LAYOUT_NAV_LINKS.map((link) => (

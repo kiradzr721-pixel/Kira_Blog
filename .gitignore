@@ -4,6 +4,7 @@ dist/
 # public shared template
 wrangler.jsonc
 worker-configuration.d.ts
+_private
 
 # generated types
 .astro/

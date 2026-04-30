@@ -1,3 +1,7 @@
+/*
+ * Custom text size utilities including text-h1 to text-h6 utilities that enable consistent
+ * heading styles both inside and outside of prose blocks.
+ */
 @theme {
 	--text-tiny: 0.625rem;
 	--text-tiny--line-height: 1.5rem;

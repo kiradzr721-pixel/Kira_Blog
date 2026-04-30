@@ -9,33 +9,33 @@ const { class: className } = Astro.props as Props
 
 const features = [
 	{
-		title: 'TailwindCSS',
-		description: 'Complete with palette and typography.',
+		title: 'Cloudflare',
+		description: 'Ready to deploy on Cloudflare Workers.',
 	},
 	{
-		title: 'Markdown & MDX',
+		title: 'Open Graph',
+		description: 'Dynamic OG image generation for social sharing.',
+	},
+	{
+		title: 'TailwindCSS',
+		description: 'Complete with palette and custom typography.',
+	},
+	{
+		title: 'MD & MDX',
 		description: 'Easily write content with elegant styling.',
 	},
 	{
-		title: 'SEO',
-		description: 'Meta helper covers standard & social tags.',
-	},
-	{
-		title: 'Sitemap',
-		description: 'Generates sitemap.xml with sane defaults.',
-	},
-	{
-		title: 'Robots',
-		description: 'robots.txt welcomes search engines.',
-	},
-	{
 		title: 'Pure Astro',
-		description: 'Clean start with zero frameworks.',
+		description: 'A blank slate with zero framework dependencies.',
+	},
+	{
+		title: 'SEO',
+		description: 'Sitemap, robots.txt, meta tags, and more.',
 	},
 ]
 ---
 
-<div class={cn('grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full mx-auto gap-6', className)}>
+<div class={cn('grid grid-cols-1 sm:grid-cols-2 w-full mx-auto gap-6', className)}>
 	{
 		features.map((feature) => (
 			<div class="flex flex-col bg-P-card text-P-card-fg border rounded-xl py-5 sm:py-6 px-5">
