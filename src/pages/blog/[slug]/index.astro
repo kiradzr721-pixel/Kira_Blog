@@ -32,7 +32,7 @@ const { Content } = await render(post)
 	}}
 >
 	<header class="flex flex-col gap-4 not-prose mb-12">
-		<h1 class="text-h1">{title}</h1>
+		<h1 class="text-h1 text-P-heading text-balance">{title}</h1>
 		{description && <p class="text-lead text-P-lead text-pretty">{description}</p>}
 		<FormattedDate class="text-P-subtle text-base" date={publishedAt} />
 	</header>

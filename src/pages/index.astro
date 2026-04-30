@@ -1,4 +1,5 @@
 ---
+import HomeFeatures from '@/components/HomeFeatures.astro'
 import HomeIntro from '@/components/HomeIntro.astro'
 import { SITE_BRAND_NAME } from '@/constants'
 import Layout from '@/layouts/Layout.astro'
@@ -14,11 +15,14 @@ import Layout from '@/layouts/Layout.astro'
 >
 	<section>
 		<header class="mb-12">
-			<h1 class="text-h1 mb-4">{SITE_BRAND_NAME}</h1>
+			<h1 class="text-h1 text-P-heading text-balance mb-4">{SITE_BRAND_NAME}</h1>
 			<div class="text-lead text-P-lead text-pretty">
 				<p>Astro v6 Starter Theme for Cloudflare Workers</p>
 			</div>
 		</header>
+		<h2 class="text-h2 text-P-heading text-balance mt-[1.75em] mb-[0.615em] text-center">Features</h2>
+		<HomeFeatures />
+		<h2 class="text-h2 text-P-heading text-balance mt-[1.75em] mb-[0.615em] text-center">About this Theme</h2>
 		<HomeIntro />
 	</section>
 </Layout>
