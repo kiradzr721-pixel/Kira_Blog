@@ -25,7 +25,7 @@ export const LAYOUT_NAV_LINKS = [
 /**
  * Short tagline for site OG image (default `/og.png` image off the root pathname).
  */
-export const OG_TAGLINE = 'Open Source theme for Astro v6 by @firxworx'
+export const OG_TAGLINE = 'Open Source Theme for Astro + Cloudflare'
 
 export const DEFAULT_OG_WIDTH_PX = 1200
 export const DEFAULT_OG_HEIGHT_PX = 630

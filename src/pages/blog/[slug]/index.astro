@@ -2,7 +2,6 @@
 import { type CollectionEntry, render, getCollection } from 'astro:content'
 import Layout from '@/layouts/Layout.astro'
 import FormattedDate from '@/components/FormattedDate.astro'
-import Heading from '@/components/Heading.astro'
 
 type Props = { post: CollectionEntry<'blog'> }
 
@@ -32,10 +31,10 @@ const { Content } = await render(post)
 		ogImageUrl: new URL(`/blog/${post.id}/og.png`, Astro.site ?? Astro.url).toString(),
 	}}
 >
-	<header class="flex flex-col not-prose mb-12">
-		<Heading as="h1">{title}</Heading>
-		{description && <p class="text-lg sm:text-xl text-P-lead text-pretty mt-4">{description}</p>}
-		<FormattedDate class="text-P-subtle text-base mt-4" date={publishedAt} />
+	<header class="flex flex-col gap-4 not-prose mb-12">
+		<h1 class="text-h1">{title}</h1>
+		{description && <p class="text-lead text-P-lead text-pretty">{description}</p>}
+		<FormattedDate class="text-P-subtle text-base" date={publishedAt} />
 	</header>
 	<Content />
 </Layout>

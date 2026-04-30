@@ -63,27 +63,41 @@ See the [Commands](#commands) section below for available scripts and tools.
 
 The TailwindCSS entrypoint is `src/styles/global.css`. This file is imported at the top of `src/layouts/Layout.astro`.
 
-A simple color palette is defined in `src/styles/palette.css` with a small set of "design tokens" such as "muted", "accent", etc.
+CSS files:
+
+- `src/styles/global.css` TailwindCSS configuration; global styles & utilities; imports other css files
+- `src/styles/palette.css` defines color palette and tokens
+- `src/styles/typography.css` defines custom `.prose` utility and `.not-prose` escape hatch
+
+> You may need to restart your dev server after making changes to `*.css` files or to styles within `<style>..</style>` blocks of Astro components.
+
+`Layout.astro` demonstrates how to use Tailwind classes inside a `style` block using `@reference` and the `@apply` directive.
+
+#### Color Palette
+
+A simple color palette is defined in `src/styles/palette.css` with a small set of "design tokens": "muted", "accent", etc.
 
 All custom palette colors follow a capital-letter `P` prefix convention ("P" for palette) to distinguish colors from other CSS properties and prevent collisions.
 
-It's easy to revise or move away from the prefix convention because the consistent P prefix makes it very easy to search and replace.
+> It's easy to revise or move away from this convention because the consistent prefix makes it easy to search and replace.
 
-Any custom `--color-P-example` color in the `@theme()` block in `palette.css` becomes available as a Tailwind color class e.g. `text-P-example` or `bg-P-example`.
+#### Typography
 
-You may need to restart your dev server after making changes to `*.css` files or to styles within `<style>..</style>` blocks of Astro components.
+The custom `prose` utility and `not-prose` escape hatch are defined in `src/styles/typography.css` along with custom text sizes: `text-tiny`, `text-lead`, and `text-h1` – `text-h6`.
 
-`Layout.astro` shows how to use Tailwind classes inside a `style` block using `@reference` and the `@apply` directive.
+Use the `text-h*` utilities to style headings outside of `prose` consistently with how they'd be styled inside `prose`.
+
+Most of the typographical styling uses relative `em` units and is therefore sensitive to the current font size.
+
+See `Layout.astro` for where `text-lg` is applied to the `main` element that contains all body content.
+
+#### Merging Classes
+
+Any custom color defined within the `@theme()` block in `palette.css` e.g. `--color-P-example` is available as a Tailwind color utility class e.g. `text-P-example` or `bg-P-example`.
 
 The `cn()` utility function exported from `@lib/style` is the popular combination of `clsx` and `tailwind-merge` and can be used to intelligently merge Tailwind classes.
 
-CSS files:
-
-- `src/styles/global.css` TailwindCSS configuration, global styles, imports other css files
-- `src/styles/palette.css` defines color palette and tokens
-- `src/styles/typography.css` defines custom `.prose` utility and `.not-prose` escape hatch
-- `src/styles/utilities.css` custom Tailwind utility including `.scroll-fade-x`
-- `src/styles/variants.css` custom Tailwind variants such as `hover-mouse:` and `hocus:`
+The custom `text-lead`, `text-h*`, etc. classes are "registered" with Tailwind Merge via `extendTailwindMerge()`.
 
 ### Fonts
 
@@ -126,21 +140,26 @@ Automatic trailing slashes are currently the default on Cloudflare Workers and a
 
 Docs: https://developers.cloudflare.com/workers/static-assets/routing/advanced/html-handling/
 
-The codebase uses consistent trailing slashes for internal links to pages to ensure compatibility with Astro's integrations such as `@astrojs/sitemap` when `trailingSlash` is `"ignore"`.
+The codebase uses consistent trailing slashes for internal links to pages to ensure compatibility with Astro integrations such as `@astrojs/sitemap` when `trailingSlash` is `"ignore"`.
 
 Astro will not automatically redirect between trailing slash vs. non-trailing slash versions of URLs when set to "ignore" however this can be achieved via Astro middleware or Cloudflare Redirect rules.
 
 ### Environment Variables & Secrets
 
-Cloudflare Workers environment variables can be defined in `wrangler.jsonc` and secrets can be created using the `wrangler secret` CLI command.
+Cloudflare Workers environment variables can be defined in `wrangler.jsonc` and secrets can be created using the `wrangler secret` CLI command:
+
+```bash
+pnpm wrangler secret put SECRET_NAME --env "development"
+pnpm wrangler secret put SECRET_NAME --env ""
+```
 
 Local development overrides can be defined by creating a `.dev.vars` file.
 
-Cloudflare-defined environment variables are **NOT** available to Astro at build time so you cannot use `envField` to define and parse them in `astro.config.ts`.
+Cloudflare-defined environment variables are **NOT** available to Astro at build time; you cannot use `envField` to define and parse them within `astro.config.ts`.
 
 Astro Docs: https://docs.astro.build/en/guides/environment-variables/
 
-Cloudflare environment variables and secrets can be imported from `cloudflare:env` in server-side code such as Astro middleware and API routes.
+Cloudflare environment variables and secrets can be imported in server-side code from `cloudflare:env`.
 
 ## Project Structure
 

@@ -15,21 +15,9 @@ export function cx(...classes: (string | undefined | null | false)[]): string {
 const twMerge = extendTailwindMerge({
 	override: {},
 	extend: {
-		classGroups: {
-			'font-size': [
-				// built-in font sizes
-				'text-xs',
-				'text-s',
-				'text-m',
-				'text-l',
-				'text-2xl',
-
-				// custom theme addition
-				'text-tiny',
-			],
+		theme: {
+			text: ['tiny', 'lead', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 		},
-		// custom variants
-		orderSensitiveModifiers: ['hover-mouse', 'hocus', 'hocus-mouse'],
 	},
 })
 

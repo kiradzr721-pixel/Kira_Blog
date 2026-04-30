@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content'
 import Layout from '@/layouts/Layout.astro'
 import FormattedDate from '@/components/FormattedDate.astro'
-import Heading from '@/components/Heading.astro'
 import { cn } from '@/lib/style'
 
 const currentDate = new Date()
@@ -22,8 +21,8 @@ const title = 'Blog Posts'
 >
 	<section>
 		<hgroup class="mb-8 sm:mb-12">
-			<Heading as="h1" class="mb-4">{title}</Heading>
-			<div class="text-xl text-P-lead text-pretty">
+			<h1 class="text-h1 mb-4">{title}</h1>
+			<div class="text-lead text-P-lead text-pretty">
 				<p>Example blog content collection with MDX.</p>
 			</div>
 		</hgroup>

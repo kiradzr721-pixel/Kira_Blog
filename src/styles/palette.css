@@ -18,7 +18,7 @@
 	--color-P-link: var(--color-sky-700);
 	--color-P-link-hover: oklch(54.40% 0.146 242.36); /* precomputed 50% color-mix to sky-800 */
 
-	/* inline code (also see astro config for shiki theme) */
+	/* inline code (see astro config for shiki theme) */
 	--color-P-code: var(--color-neutral-200);
 	--color-P-code-fg: var(--color-neutral-900);
 

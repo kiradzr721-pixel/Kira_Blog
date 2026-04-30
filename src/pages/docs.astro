@@ -1,36 +1,37 @@
 ---
-import Heading from '@/components/Heading.astro'
 import Layout from '@/layouts/Layout.astro'
 
 const title = 'Documentation'
+const description = "Customizing AstroFlareOG's Open Graph Image Templates"
 ---
 
 <Layout
 	meta={{
 		type: 'page',
 		title,
+		description,
 	}}
 >
 	<section>
-		<Heading as="h1" class="mb-4">{title}</Heading>
-		<div class="text-xl text-P-lead text-pretty">
-			<p>Customizing AstroFlareOG's Open Graph Image Templates.</p>
+		<h1 class="text-h1 mb-4">{title}</h1>
+		<div class="text-lead text-P-lead text-pretty">
+			<p>{description}</p>
 		</div>
 		<section class="prose">
 			<h2>Open Graph Images</h2>
 			<p>
-				This theme leverages <a
+				This theme generates OG images on Cloudflare Workers thanks to the <a
 					href="https://github.com/jillesme/cf-workers-og"
 					target="_blank"
 					rel="noopener noreferrer"><code>cf-workers-og</code></a
-				> by Jilles Soeters <span class="whitespace-nowrap"
+				> package by Jilles Soeters <span class="whitespace-nowrap"
 					>(GitHub: <a href="https://github.com/jillesme" target="_blank" rel="noopener noreferrer"
 						><code>@jillesme</code></a
 					>)</span
-				> to generate OG images on Cloudflare Workers.
+				>.
 			</p>
 			<p>
-				The package uses <code>@resvg/resvg-wasm</code> with patched versions of <code>satori</code> and
+				Soeters' package uses <code>@resvg/resvg-wasm</code> with patched versions of <code>satori</code> and
 				<code>yoga-layout</code> to perform its magic.
 			</p>
 			<p>
@@ -38,21 +39,21 @@ const title = 'Documentation'
 				at Cloudflare.
 			</p>
 			<p>
-				The image Response returned by the library includes <code>Cache-Control</code> headers so Cloudflare will cache them
-				for a long time and minimize requests to the Worker.
+				The image <code>Response</code> returned by the library includes <code>Cache-Control</code> headers so Cloudflare
+				will cache them for a long time and minimize requests to the Worker.
 			</p>
 			<h2>Customizing Fonts</h2>
 			<p></p>
 			<h3>Web Fonts</h3>
 			<p>AstroFlareOG uses the Astro Font Provider API to load and optimize web fonts for use in HTML and CSS.</p>
 			<p>
-				The starter theme loads the <em>Atkinson</em> family of variable fonts from <a
+				The theme uses the <em>Atkinson</em> family of variable fonts obtained from <a
 					href="https://fontsource.org/"
 					target="_blank"
 					rel="noopener noreferrer">Fontsource</a
 				>.
 			</p>
-			<p>Key files that define the setup:</p>
+			<p>Key files:</p>
 			<ul>
 				<li><code>astro.config.ts</code> &mdash; see <code>fonts</code> configuration</li>
 				<li>
@@ -82,7 +83,7 @@ const title = 'Documentation'
 			</ul>
 			<h3>Open Graph Image Fonts</h3>
 			<p>
-				Satori does <strong>not</strong> support variable fonts nor the WOFF2 format so a different font solution may be necessary
+				Satori does <strong>not</strong> support variable fonts nor the WOFF2 format so a different font solution is necessary
 				for OG image templates.
 			</p>
 			<p>Currently supported formats: <code>*.woff</code>, <code>*.ttf</code>, <code>*.otf</code></p>
@@ -90,15 +91,16 @@ const title = 'Documentation'
 				<code>cf-workers-og</code> supports loading supported font formats from Custom Sources and Google Fonts.
 			</p>
 			<p>
-				AstroFlareOG uses a Custom Source: it includes non-variable <code>*.woff</code>
-				versions of fonts from the <em>Atkinson</em> family for its OG image templates in the <code>public/fonts/</code> directory.
+				AstroFlareOG uses a Custom Source: supported non-variable <code>*.woff</code>
+				versions of fonts from the <em>Atkinson</em> family are in the <code>public/fonts/</code> directory family for use
+				in OG image templates.
 			</p>
 			<p>
-				See <code>@/lib/og/fonts.ts</code> for the <code>loadLocalFont()</code> utility that fetches the fonts via Cloudflare
-				ASSETS binding.
+				<code>@/lib/og/fonts.ts</code> exports a <code>loadLocalFont()</code> utility that fetches the fonts via Cloudflare
+				<code>ASSETS</code> binding.
 			</p>
 			<p>
-				See <code>@/pages/og.png.ts</code> and <code>@/pages/blog/[slug]/og.png.ts</code> routes where the fonts are loaded,
+				The <code>@/pages/og.png.ts</code> and <code>@/pages/blog/[slug]/og.png.ts</code> routes where the fonts are loaded,
 				the OG image template is imported, and <code>cf-workers-og</code> is invoked to generate the image response.
 			</p>
 			<p>Refer to <code>cf-workers-og</code> repo for more on Google Fonts:</p>
@@ -122,11 +124,11 @@ const title = 'Documentation'
 			</p>
 			<p><code>cf-workers-og</code> also supports rendering React JSX for Astro projects that use React components.</p>
 			<p>
-				Note there are <strong>many</strong> restrictions to observe with <code>resvg</code> and <code>satori</code>.
+				There are <strong>many</strong> restrictions to observe with <code>resvg</code> and <code>satori</code>.
 			</p>
 			<p>
-				Notable restrictions include inline styles, flexbox for layout, and avoiding unsupported CSS properties and HTML
-				elements.
+				Notable restrictions include inline styles, flexbox for layout, and a limited set of supported CSS properties
+				and HTML elements.
 			</p>
 			<p>Refer to project documentation and README's:</p>
 			<ul>
