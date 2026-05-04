@@ -29,7 +29,8 @@
 			"!pnpm-workspace.yaml",
 			"!package-lock.json",
 			"!yarn.lock",
-			"!.DS_Store"
+			"!.DS_Store",
+			"!worker-configuration.d.ts"
 		]
 	},
 	"formatter": {
