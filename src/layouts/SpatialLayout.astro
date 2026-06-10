@@ -16,8 +16,7 @@ interface Props {
 const { initialIndex, meta } = Astro.props
 
 const canonicalUrl = new URL(ensureTrailingSlash(Astro.url.pathname), Astro.site)
-const locale = new Intl.Locale(Astro.currentLocale || DEFAULT_LOCALE)
-const dir = locale.getTextInfo().direction
+const dir = 'ltr'
 
 function isActivePanel(index: number): boolean {
 	return index === initialIndex

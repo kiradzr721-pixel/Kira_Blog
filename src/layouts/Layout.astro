@@ -23,8 +23,7 @@ const canonicalUrl =
 		? new URL(meta.canonicalUrl)
 		: new URL(ensureTrailingSlash(Astro.url.pathname), Astro.site)
 
-const locale = new Intl.Locale(Astro.currentLocale || DEFAULT_LOCALE)
-const dir = locale.getTextInfo().direction
+const dir = 'ltr'
 
 const containerPaddingClassName = cn('px-4 py-8 sm:py-12 md:py-16')
 ---
