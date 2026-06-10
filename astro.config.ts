@@ -1,6 +1,5 @@
 import type { AstroUserConfig } from 'astro'
 import { defineConfig, fontProviders } from 'astro/config'
-import cloudflare from '@astrojs/cloudflare'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
@@ -14,17 +13,9 @@ const ASTRO_SITE = (
 ) satisfies AstroUserConfig['site']
 
 /**
- * Astro v6 config with Cloudflare adapter.
- *
- * This config must be mutually compatible with the `wrangler.jsonc` configuration especially
- * regarding `base`, `build`, trailing slash scheme, and wrangler's "run_worker_first" setting.
- *
- * Astro does NOT have access to any vars or secrets defined on the Cloudflare side at build-time;
- * the `envField()` feature is NOT integrated with the Cloudflare adapter.
+ * Astro v6 static site config for Cloudflare Pages.
  *
  * @see https://astro.build/config
- * @see https://docs.astro.build/en/guides/integrations-guide/cloudflare/
- * @see https://developers.cloudflare.com/workers/vite-plugin/
  */
 export default defineConfig({
 	site: ASTRO_SITE,
@@ -37,18 +28,6 @@ export default defineConfig({
 	build: {
 		format: 'directory',
 	},
-	adapter: cloudflare({
-		prerenderEnvironment: 'workerd',
-		sessionKVBindingName: 'SESSION',
-		persistState: true,
-		imageService: {
-			build: 'compile',
-			runtime: 'cloudflare-binding',
-		},
-		experimental: {
-			headersAndRedirectsDevModeSupport: true,
-		},
-	}),
 	integrations: [
 		mdx(),
 		sitemap({
@@ -64,10 +43,6 @@ export default defineConfig({
 			exclude: ['astro/runtime/client/dev-toolbar/entrypoint'],
 		},
 	},
-	session: {
-		cookie: 'astro-session',
-		ttl: 86400, // 24 hours
-	},
 	i18n: {
 		defaultLocale: 'en',
 		locales: ['en'],
@@ -77,8 +52,11 @@ export default defineConfig({
 	},
 	image: {
 		domains: process.env.CF_PAGES_URL ? [process.env.CF_PAGES_URL] : [],
-		remotePatterns: [], // e.g. ['https://example.com/images/**', 'https://**.examplecdn.com/**']
+		remotePatterns: [],
 		responsiveStyles: false,
+		service: {
+			entrypoint: 'astro/assets/services/noop',
+		},
 	},
 	fonts: [
 		{

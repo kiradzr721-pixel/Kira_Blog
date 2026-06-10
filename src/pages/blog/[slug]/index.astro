@@ -35,7 +35,7 @@ const { Content } = await render(post)
 		title,
 		description,
 		publishedAt,
-		ogImageUrl: new URL(`/blog/${post.id}/og.png`, Astro.site ?? Astro.url).toString(),
+			// ogImageUrl omitted — defaults to static /og.png
 	}}
 >
 	<header class="flex flex-col gap-4 not-prose mb-12">
