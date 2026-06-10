@@ -1,28 +1,121 @@
 ---
-import HomeFeatures from '@/components/HomeFeatures.astro'
+import SpatialLayout from '@/layouts/SpatialLayout.astro'
+import PostCard from '@/components/PostCard.astro'
 import HomeIntro from '@/components/HomeIntro.astro'
+import { getSortedPosts, partitionPosts } from '@/lib/spatial-data'
 import { SITE_BRAND_NAME } from '@/constants'
-import Layout from '@/layouts/Layout.astro'
+
+const posts = await getSortedPosts()
+const { pinnedPosts, latestPosts } = partitionPosts(posts)
+
+const TAGLINE = 'Software Engineering Student. Learning, Building, Thinking.'
 ---
 
-<Layout
-	meta={{
-		type: 'page',
-		title: SITE_BRAND_NAME,
-		description:
-			'Live demo of the AstroFlareOG starter theme for Astro on Cloudflare Workers with dynamic Open Graph image generation. Open source by @firxworx.',
-	}}
->
-	<section>
-		<header class="mb-12">
-			<h1 class="text-h1 text-P-heading text-balance mb-4">{SITE_BRAND_NAME}</h1>
-			<div class="text-lead text-P-lead text-pretty">
-				<p>Astro v6 Starter Theme for Cloudflare Workers</p>
+<SpatialLayout initialIndex={0} meta={{ type: 'page', title: SITE_BRAND_NAME, description: TAGLINE }}>
+	<!-- ── Panel 0: Home ──────────────────────────────── -->
+	<main slot="home" class="px-6 py-8 mx-auto w-full max-w-(--layout-max-width)">
+		<section class="pt-24 pb-32 text-center">
+			<h1 class="text-h1 text-P-heading text-balance mb-6">{SITE_BRAND_NAME}</h1>
+			<p class="text-lead text-P-subtle text-pretty max-w-lg mx-auto">{TAGLINE}</p>
+		</section>
+
+		{pinnedPosts.length > 0 && (
+			<section class="mt-8">
+				<h2 class="text-tiny font-medium uppercase tracking-widest text-P-muted mb-6">Featured</h2>
+				<div class="space-y-5">
+					{pinnedPosts.map((post) => <PostCard post={post} variant="featured" />)}
+				</div>
+			</section>
+		)}
+
+		{latestPosts.length > 0 && (
+			<section class={pinnedPosts.length > 0 ? 'mt-28' : 'mt-8'}>
+				<h2 class="text-tiny font-medium uppercase tracking-widest text-P-muted mb-6">Latest Posts</h2>
+				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+					{latestPosts.map((post) => <PostCard post={post} />)}
+				</div>
+			</section>
+		)}
+
+		{posts.length === 0 && (
+			<section class="mt-8 text-center"><p class="text-P-subtle">No posts yet. Check back soon.</p></section>
+		)}
+
+		<section class="mt-36">
+			<h2 class="text-tiny font-medium uppercase tracking-widest text-P-muted mb-6">About</h2>
+			<HomeIntro />
+		</section>
+	</main>
+
+	<!-- ── Panel 1: Blog List ──────────────────────────── -->
+	<main slot="blog" class="px-6 py-8 mx-auto w-full max-w-(--layout-max-width)">
+		<section>
+			<hgroup class="mb-8 sm:mb-12">
+				<h1 class="text-h1 text-P-heading text-balance mb-4">Blog</h1>
+				<div class="text-lead text-P-subtle text-pretty"><p>Thoughts on software, design, and the web.</p></div>
+			</hgroup>
+			{posts.length > 0 ? (
+				<ul class="space-y-6">
+					{posts.map((post) => (
+						<li>
+							<a href={`/blog/${post.id}/`} class="group block">
+								<h2 class="text-xl font-semibold transition-[color,text-decoration-thickness] underline underline-offset-2 decoration-current decoration-1 hover:decoration-[1.5px] text-P-link group-hover:text-P-link-hover">{post.data.title}</h2>
+								<p class="text-sm text-P-subtle mt-1">{new Date(post.data.publishedAt).toISOString().split('T')[0]}</p>
+								{post.data.description && <p class="mt-1 text-P-lead">{post.data.description}</p>}
+							</a>
+						</li>
+					))}
+				</ul>
+			) : (
+				<p class="text-P-subtle">No posts yet.</p>
+			)}
+		</section>
+	</main>
+
+	<!-- ── Panel 2: Docs ───────────────────────────────── -->
+	<main slot="docs" class="px-6 py-8 mx-auto w-full max-w-prose">
+		<section>
+			<h1 class="text-h1 text-P-heading text-balance mb-4">Documentation</h1>
+			<div class="text-lead text-P-subtle text-pretty mb-8">
+				<p>Customizing AstroFlareOG's Open Graph Image Templates</p>
 			</div>
-		</header>
-		<h2 class="text-h2 mt-[1.75em] mb-[0.615em] text-center">Features</h2>
-		<HomeFeatures />
-		<h2 class="text-h2 mt-[1.75em] mb-[0.615em] text-center">About this Theme</h2>
-		<HomeIntro />
-	</section>
-</Layout>
+			<section class="prose">
+				<h2>Open Graph Images</h2>
+				<p>This theme generates OG images on Cloudflare Workers thanks to the <a href="https://github.com/jillesme/cf-workers-og" target="_blank" rel="noopener noreferrer"><code>cf-workers-og</code></a> package by Jilles Soeters <span class="whitespace-nowrap">(GitHub: <a href="https://github.com/jillesme" target="_blank" rel="noopener noreferrer"><code>@jillesme</code></a>)</span>.</p>
+				<p>Soeters' package uses <code>@resvg/resvg-wasm</code> with patched versions of <code>satori</code> and <code>yoga-layout</code> to perform its magic.</p>
+				<p>The image <code>Response</code> returned by the library includes <code>Cache-Control</code> headers so Cloudflare will cache them for a long time and minimize requests to the Worker.</p>
+				<h2>Customizing Fonts</h2>
+				<h3>Web Fonts</h3>
+				<p>AstroFlareOG uses the Astro Font Provider API to load and optimize web fonts for use in HTML and CSS. The theme uses the <em>Atkinson</em> family of variable fonts obtained from <a href="https://fontsource.org/" target="_blank" rel="noopener noreferrer">Fontsource</a>.</p>
+				<p>Key files:</p>
+				<ul>
+					<li><code>astro.config.ts</code> &mdash; see <code>fonts</code> configuration</li>
+					<li><code>Layout.astro</code> &mdash; renders <code>&lt;Font /&gt;</code> components</li>
+					<li><code>global.css</code> &mdash; TailwindCSS theme registration</li>
+				</ul>
+				<p>The Font Provider API has built-in support for Adobe, Bunny, Fontsource, Google, NPM, etc., plus the local <code>src/assets/</code> directory.</p>
+				<ul aria-label="Astro Fonts Documentation Links">
+					<li><a href="https://docs.astro.build/en/guides/fonts/" target="_blank" rel="noopener noreferrer">Astro Fonts Docs</a></li>
+					<li><a href="https://docs.astro.build/en/reference/font-provider-reference/" target="_blank" rel="noopener noreferrer">Astro Font Provider Reference</a></li>
+				</ul>
+				<h3>Open Graph Image Fonts</h3>
+				<p>Satori does <strong>not</strong> support variable fonts nor the WOFF2 format so a different font solution is necessary for OG image templates. Currently supported formats: <code>*.woff</code>, <code>*.ttf</code>, <code>*.otf</code></p>
+				<p><code>cf-workers-og</code> supports loading supported font formats from Custom Sources and Google Fonts. AstroFlareOG uses a Custom Source: supported non-variable <code>*.woff</code> versions of fonts from the <em>Atkinson</em> family are in the <code>public/fonts/</code> directory.</p>
+				<p><code>@/lib/og/fonts.ts</code> exports a <code>loadLocalFont()</code> utility that fetches the fonts via Cloudflare <code>ASSETS</code> binding.</p>
+				<p>Refer to <code>cf-workers-og</code> repo for more on Google Fonts:</p>
+				<ul>
+					<li><a href="https://github.com/jillesme/cf-workers-og" target="_blank" rel="noopener noreferrer">jillesme/cf-workers-og</a> (GitHub Repo)</li>
+					<li><a href="https://github.com/jillesme/cf-workers-og/tree/main/examples/worker" target="_blank" rel="noopener noreferrer">example worker</a></li>
+				</ul>
+				<h2>Customizing Image Templates</h2>
+				<p>See <code>@/lib/og/*-template.ts</code> files for the functions that generate the OG image templates as HTML templates. <code>cf-workers-og</code> also supports rendering React JSX for Astro projects that use React components.</p>
+				<p>There are <strong>many</strong> restrictions to observe with <code>resvg</code> and <code>satori</code>. Notable restrictions include inline styles, flexbox for layout, and a limited set of supported CSS properties and HTML elements.</p>
+				<p>Refer to project documentation:</p>
+				<ul>
+					<li><a href="https://github.com/vercel/satori" target="_blank" rel="noopener noreferrer">https://github.com/vercel/satori</a></li>
+					<li><a href="https://github.com/thx/resvg-js" target="_blank" rel="noopener noreferrer">https://github.com/thx/resvg-js</a></li>
+				</ul>
+			</section>
+		</section>
+	</main>
+</SpatialLayout>

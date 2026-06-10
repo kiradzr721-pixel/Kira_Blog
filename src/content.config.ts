@@ -37,7 +37,8 @@ const blogCollection = defineCollection({
 			description: z.string().optional(),
 			publishedAt: z.coerce.date(),
 			updatedAt: z.coerce.date().optional(),
-			draft: z.boolean().default(false),
+			pinned: z.boolean().default(false),
+		draft: z.boolean().default(false),
 		}),
 })
 

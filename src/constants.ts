@@ -12,10 +12,10 @@ export const LOCALES = i18n?.locales || [DEFAULT_LOCALE]
 export type DateFormat = 'iso' | 'short'
 export const DEFAULT_DATE_FORMAT: DateFormat = 'iso'
 
-export const META_TITLE = 'AstroFlareOG'
-export const META_DESCRIPTION = 'Open Source Astro theme for Cloudflare Workers by @firxworx'
+export const META_TITLE = 'Kira'
+export const META_DESCRIPTION = 'Personal blog about software engineering, learning, and building.'
 
-export const SITE_BRAND_NAME = 'AstroFlareOG'
+export const SITE_BRAND_NAME = 'Kira'
 
 export const LAYOUT_NAV_LINKS = [
 	{ label: 'Blog', href: '/blog/' },
@@ -25,7 +25,7 @@ export const LAYOUT_NAV_LINKS = [
 /**
  * Short tagline for site OG image (default `/og.png` image off the root pathname).
  */
-export const OG_TAGLINE = 'Open Source Theme for Astro + Cloudflare'
+export const OG_TAGLINE = '新世界的卡密'
 
 export const DEFAULT_OG_WIDTH_PX = 1200
 export const DEFAULT_OG_HEIGHT_PX = 630

@@ -1,0 +1,255 @@
+---
+import '@/styles/global.css'
+import { ClientRouter } from 'astro:transitions'
+import { Font } from 'astro:assets'
+import { DEFAULT_LOCALE, LAYOUT_NAV_LINKS } from '@/constants'
+import { SITE_BRAND_NAME } from '@/constants'
+import type { SeoMeta, SeoMetaType } from '@/seo.types'
+import HeadSeoMeta from '@/components/HeadSeoMeta.astro'
+import { ensureTrailingSlash } from '@/lib/slashes'
+
+interface Props {
+	initialIndex: number
+	meta?: SeoMeta<SeoMetaType> | undefined
+}
+
+const { initialIndex, meta } = Astro.props
+
+const canonicalUrl = new URL(ensureTrailingSlash(Astro.url.pathname), Astro.site)
+const locale = new Intl.Locale(Astro.currentLocale || DEFAULT_LOCALE)
+const dir = locale.getTextInfo().direction
+
+function isActivePanel(index: number): boolean {
+	return index === initialIndex
+}
+---
+
+<!doctype html>
+<html lang={DEFAULT_LOCALE} dir={dir}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+
+		{typeof meta?.robots === 'string' && <meta name="robots" content={meta.robots} />}
+
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+
+		<link rel="canonical" href={canonicalUrl} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<Font cssVariable="--font-atkinson-next" preload />
+		<Font cssVariable="--font-atkinson-mono" preload />
+
+		<HeadSeoMeta canonicalUrl={canonicalUrl} meta={meta} />
+		<ClientRouter />
+	</head>
+	<body class="flex flex-col min-h-dvh antialiased bg-P-bg text-P-fg overflow-x-hidden">
+		<header class="z-50 flex justify-center px-4 pt-4" style="position:fixed;top:0;left:0;right:0;">
+			<nav class="nav-bar flex items-center gap-0.5" id="nav-bar">
+				<div class="nav-indicator" id="nav-indicator"></div>
+
+				<a
+					href="/"
+					class="nav-item"
+					data-nav-index="0"
+					data-active={isActivePanel(0) ? 'true' : undefined}
+					aria-current={isActivePanel(0) ? 'page' : undefined}
+				>
+					{SITE_BRAND_NAME}
+				</a>
+				{
+					LAYOUT_NAV_LINKS.map((link, i) => {
+						const panelIndex = i + 1
+						return (
+							<a
+								href={link.href}
+								class="nav-item"
+								data-nav-index={panelIndex}
+								data-active={isActivePanel(panelIndex) ? 'true' : undefined}
+								aria-current={isActivePanel(panelIndex) ? 'page' : undefined}
+							>
+								{link.label}
+							</a>
+						)
+					})
+				}
+			</nav>
+		</header>
+
+		<div class="spatial-viewport">
+			<div
+				class="spatial-track spatial-track--instant"
+				id="spatial-track"
+				style={`transform: translateX(-${initialIndex * 100}vw)`}
+			>
+				<section class="spatial-panel" data-panel="0" aria-label="Home">
+					<slot name="home" />
+				</section>
+				<section class="spatial-panel" data-panel="1" aria-label="Blog">
+					<slot name="blog" />
+				</section>
+				<section class="spatial-panel" data-panel="2" aria-label="Docs">
+					<slot name="docs" />
+				</section>
+			</div>
+		</div>
+
+		<footer class="pt-16 pb-8 text-center flex-shrink-0">
+			<p class="text-sm text-P-subtle">&copy; {new Date().getFullYear()} {SITE_BRAND_NAME}</p>
+		</footer>
+	</body>
+</html>
+
+<script>
+	const PAGE_ORDER: string[] = ['/', '/blog/', '/docs/']
+	const DURATION = 700
+
+	const track = document.getElementById('spatial-track')!
+	const navBar = document.getElementById('nav-bar')!
+	const indicator = document.getElementById('nav-indicator')!
+
+	console.log('DOM audit — #nav-bar count:', document.querySelectorAll('#nav-bar').length)
+	console.log('DOM audit — #nav-indicator count:', document.querySelectorAll('#nav-indicator').length)
+	console.log('DOM audit — .nav-indicator count:', document.querySelectorAll('.nav-indicator').length)
+	console.log('DOM audit — navBar ref:', navBar)
+	console.log('DOM audit — indicator ref:', indicator)
+	console.log('pathname:', window.location.pathname)
+
+	let currentIndex = PAGE_ORDER.findIndex((p) => {
+		const path = window.location.pathname
+		return path === p || path === p.replace(/\/$/, '')
+	})
+	if (currentIndex === -1) currentIndex = 0
+
+	console.log('initial currentIndex:', currentIndex)
+	console.log('history.state:', history.state)
+
+	if (history.state?.spatialIndex === undefined) {
+		history.replaceState({ spatialIndex: currentIndex }, '', PAGE_ORDER[currentIndex])
+	}
+
+	// Suppress transition for initial snap positioning (same pattern as spatial-track--instant)
+	indicator.style.transition = 'none'
+	positionIndicator(currentIndex)
+
+	requestAnimationFrame(() => {
+		track.classList.remove('spatial-track--instant')
+		indicator.style.transition = ''
+	})
+
+	/* ── Indicator ─────────────────────────────────────── */
+
+	function positionIndicator(index: number): void {
+		const target = navBar.querySelector<HTMLElement>(`[data-nav-index="${index}"]`)
+		console.log('positionIndicator target:', target?.textContent?.trim())
+		if (!target) return
+		const navRect = navBar.getBoundingClientRect()
+		const itemRect = target.getBoundingClientRect()
+		const left = itemRect.left - navRect.left
+		const width = itemRect.width
+		indicator.style.transform = `translateX(${left}px)`
+		indicator.style.width = `${width}px`
+		console.log('positionIndicator index:', index, 'left:', left, 'width:', width)
+
+			const active = navBar.querySelector('[data-active="true"]')
+			const computed = getComputedStyle(indicator)
+			console.log('computed transform:', computed.transform)
+			console.log('computed opacity:', computed.opacity)
+			console.log('active nav:', active?.textContent?.trim())
+
+	}
+
+	/* ── Spatial navigation ────────────────────────────── */
+
+	let slideTo = function(index: number): void {
+		if (index === currentIndex) return
+		currentIndex = index
+		track.style.transition = `transform ${DURATION}ms cubic-bezier(0.35, 0, 0.15, 1)`
+		track.style.transform = `translateX(-${index * 100}vw)`
+	}
+
+	function updateActiveNav(index: number): void {
+		console.log('updateActiveNav index:', index)
+		navBar.querySelectorAll('[data-active]').forEach((el) => el.removeAttribute('data-active'))
+		navBar.querySelectorAll('[aria-current]').forEach((el) => el.removeAttribute('aria-current'))
+		const target = navBar.querySelector<HTMLElement>(`[data-nav-index="${index}"]`)
+		if (target) {
+			target.setAttribute('data-active', 'true')
+			target.setAttribute('aria-current', 'page')
+		}
+		requestAnimationFrame(() => {
+			positionIndicator(index)
+		})
+	}
+
+	/* ── Browser back/forward ──────────────────────────── */
+
+	window.addEventListener('popstate', (e) => {
+		if (e.state && typeof e.state.spatialIndex === 'number') {
+			const target = e.state.spatialIndex
+			slideTo(target)
+			updateActiveNav(target)
+		}
+	})
+
+	/* ── Re-sync after ClientRouter return ─────────────── */
+
+	document.addEventListener('astro:page-load', () => {
+		console.log('astro:page-load fired')
+		const urlIndex = PAGE_ORDER.findIndex((p) => {
+			const path = window.location.pathname
+			return path === p || path === p.replace(/\/$/, '')
+		})
+		if (urlIndex !== -1 && urlIndex !== currentIndex) {
+			console.log('urlIndex:', urlIndex, 'currentIndex:', currentIndex)
+			currentIndex = urlIndex
+			track.style.transition = 'none'
+			const targetX = -urlIndex * 100
+			console.log('setting track to:', `translateX(${targetX}vw)`)
+			track.style.transform = `translateX(${targetX}vw)`
+			updateActiveNav(urlIndex)
+		}
+		requestAnimationFrame(() => {
+			track.style.transition = `transform ${DURATION}ms cubic-bezier(0.35, 0, 0.15, 1)`
+		})
+	})
+
+	/* ── Nav click handler ────────────────────────────── */
+
+	function navigateToPanel(targetIndex: number): void {
+		console.log('navigateToPanel targetIndex:', targetIndex)
+		if (targetIndex === currentIndex) return
+		slideTo(targetIndex)
+		updateActiveNav(targetIndex)
+		history.pushState({ spatialIndex: targetIndex }, '', PAGE_ORDER[targetIndex])
+	}
+
+	navBar.addEventListener('click', (e) => {
+		const link = (e.target as Element).closest('.nav-item')
+		if (!link) return
+		const href = link.getAttribute('href')
+		if (!href) return
+		const url = new URL(href, window.location.origin)
+		const idx = PAGE_ORDER.findIndex((p) => url.pathname === p || url.pathname === p.replace(/\/$/, ''))
+		if (idx === -1) return
+		e.preventDefault()
+		navigateToPanel(idx)
+	})
+
+	/* ── Track diagnostics ─────────────────────────────── */
+
+	console.log('track found:', !!track)
+	console.log('track element:', track)
+	console.log('instant class at init:', track.classList.contains('spatial-track--instant'))
+
+	const origSlideTo = slideTo
+	slideTo = function(index: number): void {
+		console.log('slideTo index:', index)
+		console.log('before transform:', track.style.transform)
+		console.log('instant class:', track.classList.contains('spatial-track--instant'))
+		origSlideTo(index)
+		console.log('after transform:', track.style.transform)
+	}
+</script>

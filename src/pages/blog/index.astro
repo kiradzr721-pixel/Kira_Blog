@@ -1,51 +1,90 @@
 ---
-import { getCollection } from 'astro:content'
-import Layout from '@/layouts/Layout.astro'
-import FormattedDate from '@/components/FormattedDate.astro'
-import { cn } from '@/lib/style'
+import SpatialLayout from '@/layouts/SpatialLayout.astro'
+import PostCard from '@/components/PostCard.astro'
+import HomeIntro from '@/components/HomeIntro.astro'
+import { getSortedPosts, partitionPosts } from '@/lib/spatial-data'
+import { SITE_BRAND_NAME } from '@/constants'
 
-const currentDate = new Date()
-const posts = (await getCollection('blog', ({ data }) => !data.draft && data.publishedAt <= currentDate)).sort(
-	(a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
-)
+const posts = await getSortedPosts()
+const { pinnedPosts, latestPosts } = partitionPosts(posts)
 
-const title = 'Blog Posts'
+const TAGLINE = 'Software Engineering Student. Learning, Building, Thinking.'
 ---
 
-<Layout
-	meta={{
-		type: 'page',
-		title,
-		description: 'Explore the latest from our blog.',
-	}}
->
-	<section>
-		<hgroup class="mb-8 sm:mb-12">
-			<h1 class="text-h1 text-P-heading text-balance mb-4">{title}</h1>
-			<div class="text-lead text-P-lead text-pretty">
-				<p>Example blog content collection with MDX.</p>
-			</div>
-		</hgroup>
-		<ul class="space-y-6">
-			{
-				posts.map((post) => (
-					<li>
-						<a href={`/blog/${post.id}/`} class="group block">
-							<h2
-								class={cn(
-									'text-xl font-semibold transition-[color,text-decoration-thickness]',
-									'underline underline-offset-2 decoration-current decoration-1 hover:decoration-[1.5px]',
-									'text-P-link group-hover:text-P-link-hover',
-								)}
-							>
-								{post.data.title}
-							</h2>
-							<FormattedDate class="text-sm text-P-subtle" date={post.data.publishedAt} />
-							{post.data.description && <p class="mt-1 text-P-lead">{post.data.description}</p>}
-						</a>
-					</li>
-				))
-			}
-		</ul>
-	</section>
-</Layout>
+<SpatialLayout initialIndex={1} meta={{ type: 'page', title: 'Blog', description: 'Explore the latest posts.' }}>
+	<!-- ── Panel 0: Home ──────────────────────────────── -->
+	<main slot="home" class="px-6 py-8 mx-auto w-full max-w-(--layout-max-width)">
+		<section class="pt-24 pb-32 text-center">
+			<h1 class="text-h1 text-P-heading text-balance mb-6">{SITE_BRAND_NAME}</h1>
+			<p class="text-lead text-P-subtle text-pretty max-w-lg mx-auto">{TAGLINE}</p>
+		</section>
+		{pinnedPosts.length > 0 && (
+			<section class="mt-8">
+				<h2 class="text-tiny font-medium uppercase tracking-widest text-P-muted mb-6">Featured</h2>
+				<div class="space-y-5">{pinnedPosts.map((post) => <PostCard post={post} variant="featured" />)}</div>
+			</section>
+		)}
+		{latestPosts.length > 0 && (
+			<section class={pinnedPosts.length > 0 ? 'mt-28' : 'mt-8'}>
+				<h2 class="text-tiny font-medium uppercase tracking-widest text-P-muted mb-6">Latest Posts</h2>
+				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">{latestPosts.map((post) => <PostCard post={post} />)}</div>
+			</section>
+		)}
+		{posts.length === 0 && <section class="mt-8 text-center"><p class="text-P-subtle">No posts yet.</p></section>}
+		<section class="mt-36">
+			<h2 class="text-tiny font-medium uppercase tracking-widest text-P-muted mb-6">About</h2>
+			<HomeIntro />
+		</section>
+	</main>
+
+	<!-- ── Panel 1: Blog List ──────────────────────────── -->
+	<main slot="blog" class="px-6 py-8 mx-auto w-full max-w-(--layout-max-width)">
+		<section>
+			<hgroup class="mb-8 sm:mb-12">
+				<h1 class="text-h1 text-P-heading text-balance mb-4">Blog</h1>
+				<div class="text-lead text-P-subtle text-pretty"><p>Thoughts on software, design, and the web.</p></div>
+			</hgroup>
+			{posts.length > 0 ? (
+				<ul class="space-y-6">
+					{posts.map((post) => (
+						<li>
+							<a href={`/blog/${post.id}/`} class="group block">
+								<h2 class="text-xl font-semibold transition-[color,text-decoration-thickness] underline underline-offset-2 decoration-current decoration-1 hover:decoration-[1.5px] text-P-link group-hover:text-P-link-hover">{post.data.title}</h2>
+								<p class="text-sm text-P-subtle mt-1">{new Date(post.data.publishedAt).toISOString().split('T')[0]}</p>
+								{post.data.description && <p class="mt-1 text-P-lead">{post.data.description}</p>}
+							</a>
+						</li>
+					))}
+				</ul>
+			) : (
+				<p class="text-P-subtle">No posts yet.</p>
+			)}
+		</section>
+	</main>
+
+	<!-- ── Panel 2: Docs ───────────────────────────────── -->
+	<main slot="docs" class="px-6 py-8 mx-auto w-full max-w-prose">
+		<section>
+			<h1 class="text-h1 text-P-heading text-balance mb-4">Documentation</h1>
+			<div class="text-lead text-P-subtle text-pretty mb-8"><p>Customizing AstroFlareOG's Open Graph Image Templates</p></div>
+			<section class="prose">
+				<h2>Open Graph Images</h2>
+				<p>This theme generates OG images on Cloudflare Workers thanks to the <a href="https://github.com/jillesme/cf-workers-og" target="_blank" rel="noopener noreferrer"><code>cf-workers-og</code></a> package by Jilles Soeters.</p>
+				<p>Soeters' package uses <code>@resvg/resvg-wasm</code> with patched versions of <code>satori</code> and <code>yoga-layout</code>.</p>
+				<p>The image <code>Response</code> includes <code>Cache-Control</code> headers so Cloudflare caches them.</p>
+				<h2>Customizing Fonts</h2>
+				<h3>Web Fonts</h3>
+				<p>AstroFlareOG uses the Astro Font Provider API. The theme uses <em>Atkinson</em> variable fonts from <a href="https://fontsource.org/" target="_blank" rel="noopener noreferrer">Fontsource</a>.</p>
+				<p>Key files: <code>astro.config.ts</code>, <code>Layout.astro</code>, <code>global.css</code>.</p>
+				<ul><li><a href="https://docs.astro.build/en/guides/fonts/" target="_blank" rel="noopener noreferrer">Astro Fonts Docs</a></li><li><a href="https://docs.astro.build/en/reference/font-provider-reference/" target="_blank" rel="noopener noreferrer">Astro Font Provider Reference</a></li></ul>
+				<h3>OG Image Fonts</h3>
+				<p>Satori does <strong>not</strong> support variable fonts or WOFF2. Supported: <code>*.woff</code>, <code>*.ttf</code>, <code>*.otf</code>. <code>cf-workers-og</code> supports Custom Sources and Google Fonts.</p>
+				<p><code>@/lib/og/fonts.ts</code> exports <code>loadLocalFont()</code> using Cloudflare <code>ASSETS</code> binding.</p>
+				<ul><li><a href="https://github.com/jillesme/cf-workers-og" target="_blank" rel="noopener noreferrer">jillesme/cf-workers-og</a></li></ul>
+				<h2>Customizing Image Templates</h2>
+				<p>See <code>@/lib/og/*-template.ts</code>. <code>cf-workers-og</code> also supports React JSX.</p>
+				<ul><li><a href="https://github.com/vercel/satori" target="_blank" rel="noopener noreferrer">satori</a></li><li><a href="https://github.com/thx/resvg-js" target="_blank" rel="noopener noreferrer">resvg-js</a></li></ul>
+			</section>
+		</section>
+	</main>
+</SpatialLayout>

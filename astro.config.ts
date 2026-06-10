@@ -7,9 +7,10 @@ import tailwindcss from '@tailwindcss/vite'
 
 import { rehypeWrapTables } from './plugins/rehype/rehype-wrap-tables'
 
-const DEPLOY_DOMAIN = 'astroflare-og-public.bitcurve.workers.dev'
 const ASTRO_SITE = (
-	process.env.NODE_ENV === 'production' ? `https://${DEPLOY_DOMAIN}` : 'http://localhost:4321'
+	process.env.CF_PAGES_URL ? `https://${process.env.CF_PAGES_URL}`
+	: process.env.SITE_URL ? process.env.SITE_URL
+	: 'http://localhost:4321'
 ) satisfies AstroUserConfig['site']
 
 /**
@@ -75,7 +76,7 @@ export default defineConfig({
 		},
 	},
 	image: {
-		domains: [DEPLOY_DOMAIN], // e.g. ['images.unsplash.com', 'cdn.pixabay.com', 'cdn.bsky.app']
+		domains: process.env.CF_PAGES_URL ? [process.env.CF_PAGES_URL] : [],
 		remotePatterns: [], // e.g. ['https://example.com/images/**', 'https://**.examplecdn.com/**']
 		responsiveStyles: false,
 	},
@@ -116,7 +117,7 @@ export default defineConfig({
 				protocol: 'http',
 			},
 			{
-				hostname: DEPLOY_DOMAIN,
+				hostname: process.env.CF_PAGES_URL || 'localhost',
 				protocol: 'https',
 			},
 		],

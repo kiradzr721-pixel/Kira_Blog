@@ -21,6 +21,13 @@ const { title, description, publishedAt } = post.data
 const { Content } = await render(post)
 ---
 
+<button
+	type="button"
+	class="back-button"
+	aria-label="Back to blog"
+	onclick="window.location.replace('/blog/')"
+>&lt;</button>
+
 <Layout
 	variant="post"
 	meta={{

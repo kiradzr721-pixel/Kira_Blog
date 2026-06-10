@@ -1,41 +1,65 @@
+/*
+ * Semantic design tokens — Apple warm-gray system.
+ *
+ * Each token is a semantic name (what it IS, not what it LOOKS LIKE)
+ * mapped to a concrete value. To add dark mode later, override these
+ * under a [data-theme="dark"] selector without touching any component.
+ */
+
 @theme inline {
-	/* global layout */
-	--color-P-bg: var(--color-neutral-50);
-	--color-P-fg: var(--color-neutral-800);
+	/* ── Background hierarchy ─────────────────────────────── */
+	--color-P-bg: oklch(96.5% 0.002 90); /* warm near-white  #f5f5f7 */
+	--color-P-surface: oklch(100% 0 0); /* pure white for cards */
 
-	/* global ui chrome */
-	--color-P-selection: var(--color-sky-200);
-	--color-P-selection-fg: var(--color-neutral-900);
+	/* ── Foreground hierarchy ─────────────────────────────── */
+	--color-P-fg: oklch(17% 0.003 90); /* near-black  #1d1d1f */
+	--color-P-subtle: oklch(48% 0.004 280); /* apple gray  #6e6e73 */
+	--color-P-muted: oklch(72% 0.003 280); /* faint gray  #aeaeb2 */
+
+	/* ── Accent (used sparingly) ──────────────────────────── */
+	--color-P-accent: oklch(17% 0.003 90); /* default link = near-black */
+	--color-P-accent-hover: var(--color-sky-700); /* apple blue on hover only */
+
+	/* ── Borders ──────────────────────────────────────────── */
+	--color-P-border: oklch(0% 0 0 / 0.06);
+	--color-P-border-strong: oklch(0% 0 0 / 0.10);
+
+	/* ── Selection ────────────────────────────────────────── */
+	--color-P-selection: oklch(82% 0.06 250); /* soft apple blue */
+	--color-P-selection-fg: oklch(17% 0.003 90);
+
+	/* ── Scrollbar ────────────────────────────────────────── */
 	--color-P-scrollbar-track: transparent;
-	--color-P-scrollbar-thumb: var(--color-neutral-300);
+	--color-P-scrollbar-thumb: oklch(80% 0 0);
 
-	/* typographical */
-	--color-P-lead: var(--color-neutral-600);
-	--color-P-subtle: var(--color-neutral-500);
-	--color-P-bullet: var(--color-neutral-600);
-	--color-P-heading: var(--color-neutral-700);
-	--color-P-strong: var(--color-neutral-700);
-	--color-P-link: var(--color-sky-700);
-	--color-P-link-hover: oklch(54.40% 0.146 242.36); /* precomputed 50% color-mix to sky-800 */
+	/* ── Typographical colors ─────────────────────────────── */
+	--color-P-heading: oklch(17% 0.003 90);
+	--color-P-lead: oklch(48% 0.004 280);
+	--color-P-strong: oklch(17% 0.003 90);
+	--color-P-bullet: oklch(48% 0.004 280);
+	--color-P-link: oklch(17% 0.003 90);
+	--color-P-link-hover: oklch(54.4% 0.146 242.36); /* sky-700 */
 
-	/* highlight (<mark>) */
-	--color-P-highlight: var(--color-yellow-200);
+	/* ── Highlight ────────────────────────────────────────── */
+	--color-P-highlight: oklch(93% 0.06 100);
 
-	/* core ui */
-	--color-P-border: var(--color-neutral-200);
-	--color-P-ring: var(--color-sky-300);
+	/* ── Code blocks ──────────────────────────────────────── */
+	--color-P-code: oklch(0% 0 0 / 0.04);
+	--color-P-code-fg: oklch(17% 0.003 90);
 
-	/* common (base is bg and -fg suffix is legible contrast foreground) */
-	--color-P-card: var(--color-P-bg);
+	/* ── Navigation glass ─────────────────────────────────── */
+	--color-P-nav-bg: oklch(96.5% 0.002 90 / 0.72);
+
+	/* ── UI surfaces ──────────────────────────────────────── */
+	--color-P-card: var(--color-P-surface);
 	--color-P-card-fg: var(--color-P-fg);
-	--color-P-muted: var(--color-neutral-200);
-	--color-P-muted-fg: var(--color-neutral-500);
-	--color-P-accent: var(--color-neutral-200);
-	--color-P-accent-fg: var(--color-neutral-900);
+	--color-P-muted-bg: oklch(0% 0 0 / 0.04);
+	--color-P-muted-fg: oklch(48% 0.004 280);
+	--color-P-accent-bg: oklch(0% 0 0 / 0.04);
+	--color-P-accent-fg: oklch(17% 0.003 90);
 
-	/* inline code (see astro config for shiki theme) */
-	--color-P-code: var(--color-neutral-200);
-	--color-P-code-fg: var(--color-neutral-900);
+	/* ── Ring ──────────────────────────────────────────────── */
+	--color-P-ring: oklch(54.4% 0.146 242.36 / 0.50);
 }
 
 :root {
