@@ -46,7 +46,11 @@ function isActivePanel(index: number): boolean {
 	</head>
 	<body class="flex flex-col min-h-dvh antialiased bg-P-bg text-P-fg overflow-x-hidden">
 		<header class="z-50 flex justify-center px-4 pt-4" style="position:fixed;top:0;left:0;right:0;">
-			<nav class="nav-bar flex items-center gap-0.5" id="nav-bar">
+			<nav
+	class="nav-bar flex items-center gap-0.5"
+	id="nav-bar"
+	style="-webkit-backdrop-filter:saturate(180%) blur(28px);backdrop-filter:saturate(180%) blur(28px)"
+>
 				<div class="nav-indicator" id="nav-indicator"></div>
 
 				<a

@@ -52,22 +52,23 @@
 	}
 }
 
-@layer components {
-	.nav-bar {
-		position: relative;
-		margin: 1rem auto 0;
-		max-width: var(--container-lg);
-		width: auto;
-		padding: 0.5rem 0.625rem;
-		border-radius: 9999px;
-		overflow: visible;
+.nav-bar {
+	position: relative;
+	margin: 1rem auto 0;
+	max-width: var(--container-lg);
+	width: auto;
+	padding: 0.5rem 0.625rem;
+	border-radius: 9999px;
+	overflow: visible;
 
-		background: oklch(100% 0 0 / 0.12);
-		backdrop-filter: saturate(180%) blur(28px);
-		-webkit-backdrop-filter: saturate(180%) blur(28px);
-		border: 1px solid oklch(100% 0 0 / 0.15);
-		box-shadow: 0 8px 32px oklch(0% 0 0 / 0.08);
-	}
+	background: oklch(100% 0 0 / 0.12);
+	border: 1px solid oklch(100% 0 0 / 0.15);
+	box-shadow: 0 8px 32px oklch(0% 0 0 / 0.08);
+}
+.nav-bar {
+	backdrop-filter: saturate(180%) blur(28px);
+	-webkit-backdrop-filter: saturate(180%) blur(28px);
+}
 
 	/* ── Navigation bar ────────────────────────────────────── */
 
@@ -163,7 +164,6 @@
 	}
 
 	/* ── View Transition ───────────────────────────────────── */
-}
 /* ── Spatial viewport ──────────────────────────────────── */
 
 .spatial-viewport {
