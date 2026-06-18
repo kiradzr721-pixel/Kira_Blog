@@ -5,7 +5,21 @@ import { z } from 'astro/zod'
 import { invariant } from '@/lib/ensure'
 
 const DATE_PREFIX_REGEX = /^\d{4}-\d{2}-\d{2}[-_.]?/
-const zSlug = z.string().slugify()
+
+/**
+ * Custom slugify that preserves CJK characters.
+ * Zod's built-in `slugify()` strips non-ASCII characters,
+ * which breaks slugs for Chinese / Japanese / Korean filenames.
+ */
+function slugify(value: string): string {
+	return value
+		.trim()
+		.toLowerCase()
+		.replace(/\s+/g, '-') // spaces → dashes
+		.replace(/[^a-z0-9一-鿿㐀-䶿぀-ゟ゠-ヿ가-힯\-]/g, '') // keep CJK + hangul
+		.replace(/-+/g, '-') // collapse dashes
+		.replace(/^-|-$/g, '') // trim leading/trailing dashes
+}
 
 /**
  * Blog collection of markdown files.
@@ -25,8 +39,9 @@ const blogCollection = defineCollection({
 		generateId: (options) => {
 			const filePath = options.entry
 
-			const result = zSlug.parse(filePath.replace(DATE_PREFIX_REGEX, '').replace(/\.(md|mdx)$/, ''))
-			invariant(result.trim().length > 0, () => `Invalid slug generated from file path: ${filePath}`)
+			const raw = filePath.replace(DATE_PREFIX_REGEX, '').replace(/\.(md|mdx)$/, '')
+			const result = slugify(raw)
+			invariant(result.length > 0, () => `Invalid slug generated from file path: ${filePath}`)
 
 			return result
 		},
