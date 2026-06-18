@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./palette.css" layer(base);
 @import "./typography.css";
+@import "katex/dist/katex.min.css";
 
 @source "../**/*.{ts,tsx,astro}";
 

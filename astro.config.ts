@@ -5,6 +5,8 @@ import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 
 import { rehypeWrapTables } from './plugins/rehype/rehype-wrap-tables'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 
 const ASTRO_SITE = (
 	process.env.CF_PAGES_URL ? `https://${process.env.CF_PAGES_URL}`
@@ -112,6 +114,7 @@ export default defineConfig({
 			themes: { light: 'github-light', dark: 'github-dark-dimmed' },
 			wrap: false,
 		},
-		rehypePlugins: [rehypeWrapTables],
+		remarkPlugins: [remarkMath],
+			rehypePlugins: [rehypeWrapTables, rehypeKatex],
 	},
 })
